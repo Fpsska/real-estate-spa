@@ -1,25 +1,5 @@
-export class UpdateCardDto {
-    id: string;
-    equipment: string;
-    suggestions: string;
-    image: string;
-    complexName: string;
-    subwayName: string;
-    walkTime: string;
-    wayMoving: string;
-    isActive: boolean;
-    selectTemplates: SelectTemplateDto[];
-}
+import { PartialType } from '@nestjs/mapped-types';
 
-class SelectTemplateDto {
-    id: number;
-    ploteName: string;
-    housingNumber: string;
-    quartalNumber: string;
-    prices: PriceTemplateDto[];
-}
+import { CreateCardDto } from './create-card.dto';
 
-class PriceTemplateDto {
-    id: number;
-    value: number;
-}
+export class UpdateCardDto extends PartialType(CreateCardDto) {}

@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
-import cardsMock from './mock/cards.mock.json';
+// import cardsMock from './mock/cards.mock.json';
 
 @Injectable()
 export class CardsService {
-    private cards: UpdateCardDto[] = cardsMock as UpdateCardDto[];
+    private cards: CreateCardDto[] = [];
 
     getAll() {
         return this.cards;
@@ -19,26 +19,25 @@ export class CardsService {
     }
 
     create(dto: CreateCardDto) {
-        const item = { ...dto, id: `${this.cards.length + 1}` };
-        this.cards.push(item);
+        this.cards.push(dto);
 
-        return item;
+        return dto;
     }
 
-    update(id: string, dto: UpdateCardDto) {
+    update(id: string, dto: CreateCardDto) {
         const index = this.cards.findIndex((card) => card.id === id);
         if (index === -1) {
             throw new NotFoundException(`Card by ID:${id} is not exist`);
         }
 
-        this.cards[index] = { ...dto, id }; // TODO: ValidationPipe for dto
+        this.cards[index] = { ...dto, id };
 
         return this.cards[index];
     }
 
-    patch(id: string, dto: Partial<UpdateCardDto>) {
+    patch(id: string, dto: UpdateCardDto) {
         const item = this.getById(id);
-        Object.assign(item, dto, { id }); // TODO: ValidationPipe for dto
+        Object.assign(item, dto, { id });
 
         return item;
     }

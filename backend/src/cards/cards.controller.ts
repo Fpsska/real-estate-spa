@@ -32,12 +32,12 @@ export class CardsController {
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() dto: UpdateCardDto) {
+    update(@Param('id') id: string, @Body() dto: CreateCardDto) {
         return this.cardsService.update(id, dto);
     }
 
     @Patch(':id')
-    patch(@Param('id') id: string, @Body() dto: Partial<UpdateCardDto>) {
+    patch(@Param('id') id: string, @Body() dto: UpdateCardDto) {
         return this.cardsService.patch(id, dto);
     }
 
