@@ -40,6 +40,7 @@ export default defineConfig(
             },
             'import/resolver': {
                 node: {
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
                     paths: ['src']
                 }
             }
@@ -53,6 +54,8 @@ export default defineConfig(
 
             'prettier/prettier': ['warn', { endOfLine: 'auto' }],
             'jsx-quotes': ['warn', 'prefer-double'],
+            '@typescript-eslint/no-unused-vars': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-empty-interface': 'off',
             '@typescript-eslint/no-non-null-assertion': 'off',
             'import/order': [

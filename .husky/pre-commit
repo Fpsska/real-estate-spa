@@ -6,4 +6,4 @@ fallbackMessage="
 ========================================================================
 "
 
-npm run lint || (echo "$fallbackMessage" && exit 1)
+npm run lint --prefix frontend && npm run lint --prefix backend || (echo "$fallbackMessage" && exit 1)

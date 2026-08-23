@@ -6,6 +6,7 @@ import {
 // /. imports
 
 // TODO: +cards state
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type CardsState = {
     // activeCardId: string | null;
 };

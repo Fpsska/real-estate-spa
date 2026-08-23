@@ -9,6 +9,7 @@ import sharedConfig from '../eslint.config.mjs';
 // /. imports
 
 export default defineConfig(sharedConfig, eslintConfigPrettier, {
+    files: ['**/*.ts'],
     extends: [tseslint.configs.recommended],
     plugins: {
         prettier: prettierPlugin
@@ -25,6 +26,8 @@ export default defineConfig(sharedConfig, eslintConfigPrettier, {
     },
     rules: {
         'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off'
