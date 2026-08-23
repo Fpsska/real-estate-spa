@@ -1,23 +1,40 @@
 name: Linting Code
 
 on: push
+
 jobs:
-    greeting:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Echo a greeting message
-              run: echo "Hello from custom linting action👋"
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Share repository for workspace runner
-              uses: actions/checkout@v4
-            - name: Cache dependencies
-              uses: actions/cache@v4
-              with:
-                  path: ~/.npm
-                  key: node-modules-${{ hashFiles('**/package-lock.json') }}
-            - name: Install dependencies
-              run: npm ci || npm install
-            - name: Lint code
-              run: npm run lint
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a greeting message
+        run: echo "Hello from custom linting action 👋"
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [frontend, backend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - name: Share repository for workspace runner
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.project }}/node_modules
+          key: ${{ runner.os }}-${{ matrix.project }}-node-modules-${{ hashFiles(format('{0}/package-lock.json', matrix.project)) }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.project }}-node-modules-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint code of ${{ matrix.project }}
+        run: npm run lint

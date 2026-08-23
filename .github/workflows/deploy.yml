@@ -1,75 +1,84 @@
 name: Deploy app on github.io
 
 on:
-    push:
-        tags:
-            - "v[0-9]+.[0-9]+.[0-9]+" # v25.1.0
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+" # v25.1.0
 
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
-    contents: read
-    pages: write
-    id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 # Allow one concurrent deployment
 concurrency:
-    group: "pages"
-    cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-    greeting:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Echo a greeting message
-              run: echo "Hello from custom deploy action👋"
-    build:
-        strategy:
-            matrix:
-                version: [22, 24]
-                os: [ubuntu-latest, windows-latest]
-        runs-on: ${{ matrix.os }}
-        continue-on-error: true
-        steps:
-            - name: Share repository for workspace runner
-              uses: actions/checkout@v4
-            - name: Set up NodeJS
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ matrix.version }}
-            - name: Cache dependencies
-              uses: actions/cache@v4
-              with:
-                  path: ~/.npm
-                  key: node-modules-${{ hashFiles('**/package-lock.json') }}
-            - name: Install dependencies
-              run: npm ci || npm install
-            - name: Build
-              run: npm run build
-            - name: Upload Artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  path: build
-                  name: app-build-${{ matrix.os }}-node-${{ matrix.version }}
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
-        steps:
-            - name: Download artifacts
-              uses: actions/download-artifact@v4
-              with:
-                  path: build
-                  name: app-build-ubuntu-latest-node-22
-            - name: Test downloaded artifacts
-              run: ls -R build
-            - name: Setup Pages
-              uses: actions/configure-pages@v4
-            - name: Upload pages artifacts
-              uses: actions/upload-pages-artifact@v3
-              with:
-                  path: "build"
-            - name: Deploy to GitHub Pages
-              id: deployment
-              uses: actions/deploy-pages@v4
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo a greeting message
+        run: echo "Hello from custom deploy action 👋"
+  build:
+    strategy:
+      matrix:
+        version: [22, 24]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
+    steps:
+      - name: Share repository for workspace runner
+        uses: actions/checkout@v4
+
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: build
+          name: app-build-${{ matrix.os }}-node-${{ matrix.version }}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: build
+          name: app-build-ubuntu-latest-node-22
+
+      - name: Test downloaded artifacts
+        run: ls -R build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload pages artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "build"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
