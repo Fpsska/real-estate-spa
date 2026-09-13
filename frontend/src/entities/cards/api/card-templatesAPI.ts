@@ -4,15 +4,17 @@ import { Icards } from '../model/types';
 
 // /. imports
 
+const URL = 'https://real-estate-spa-backend.vercel.app/';
+
 export const cardTemplatesAPI = createApi({
     reducerPath: 'cardTemplatesAPI',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://cake-labs-backend.vercel.app/api'
+        baseUrl: URL
     }),
     endpoints: (build) => ({
         getCardTemplates: build.query<Icards[], void>({
             query: () => ({
-                url: 'card-templates'
+                url: 'cards'
             })
         })
     })

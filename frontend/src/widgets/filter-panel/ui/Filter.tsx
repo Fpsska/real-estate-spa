@@ -19,8 +19,8 @@ import './filter.scss';
 // /. imports
 
 interface propTypes {
-    enteredSearchValue: string;
-    setEnteredSearchValue: (value: string) => void;
+    searchValue: string;
+    setSearchValue: (value: string) => void;
     projectCount: number;
     projectText: string;
     isDataLoading: boolean;
@@ -28,12 +28,14 @@ interface propTypes {
     isCardsEmpty: boolean;
 }
 
+const SUBWAY_REGEXP = /[^a-zA-Z\s]/g;
+
 // /. interfaces
 
 const Filter: React.FC<propTypes> = (props) => {
     const {
-        enteredSearchValue,
-        setEnteredSearchValue,
+        searchValue,
+        setSearchValue,
         projectCount,
         projectText,
         isDataLoading,
@@ -258,13 +260,11 @@ const Filter: React.FC<propTypes> = (props) => {
                         className="filter__input filter__input--area"
                         type="text"
                         placeholder="Subway area"
-                        value={enteredSearchValue}
+                        value={searchValue}
                         disabled={isDataLoading || isError}
                         // TODO: FIX
-                        onChange={(e) =>
-                            setEnteredSearchValue(
-                                e.target.value.replace(/[^a-zA-Z\s]/g, '')
-                            )
+                        onChange={({ target: { value } }) =>
+                            setSearchValue(value.replace(SUBWAY_REGEXP, ''))
                         }
                     />
                     <AiOutlineSearch size={18} />

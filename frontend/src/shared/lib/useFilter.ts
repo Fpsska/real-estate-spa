@@ -1,29 +1,36 @@
 // TODO: RELOCATE
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 // /. imports
 
-interface propTypes {
-    items: any[];
-    filterProp: string;
+interface UseFilterProps<T> {
+    items: T[];
+    filterProp: keyof T;
+}
+
+interface UseFilterResult<T> {
+    searchValue: string;
+    setSearchValue: Dispatch<SetStateAction<string>>;
+    filteredItems: T[];
 }
 
 // /. interfaces
 
-export function useFilter(props: propTypes): any {
-    const { items = [], filterProp } = props;
+export function useFilter<T>(props: UseFilterProps<T>): UseFilterResult<T> {
+    const { items, filterProp } = props;
 
-    const [enteredSearchValue, setEnteredSearchValue] = useState<string>('');
+    const [searchValue, setSearchValue] = useState<string>('');
 
-    const filteredItems = enteredSearchValue
-        ? items.filter((item) =>
-              RegExp(enteredSearchValue.trim(), 'i').test(item[filterProp])
-          )
+    const filteredItems = searchValue
+        ? items.filter((item) => {
+              const itemValue = String(item[filterProp]);
+              return RegExp(searchValue.trim(), 'i').test(itemValue);
+          })
         : items;
 
     return {
-        enteredSearchValue,
-        setEnteredSearchValue,
+        searchValue,
+        setSearchValue,
         filteredItems
     };
 }
