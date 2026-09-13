@@ -8,7 +8,7 @@ import { ErrorPage } from '../../pages/error-page';
 
 export const appRoutes: RouteObject[] = [
     {
-        path: '/real-estate-spa',
+        path: '/',
         element: <Layout />,
         children: [
             {

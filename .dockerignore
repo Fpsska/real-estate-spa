@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/.git
+**/.github
+**/.husky
+**/*.md
+**/.env
+**/.env.*
+**/npm-debug.log

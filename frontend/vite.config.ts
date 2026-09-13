@@ -6,11 +6,15 @@ import reactPlugin from '@vitejs/plugin-react';
 
 // /. imports
 
-const getPlugins = (
-    mode: UserConfig['mode'] = 'development'
-): UserConfig['plugins'] => {
-    const isMinifyMode = ['production', 'docker'].includes(mode);
-    const isDevMode = mode === 'development';
+enum Mode {
+    development = 'development',
+    production = 'production',
+    docker = 'docker'
+}
+
+const getPlugins = (mode = Mode.development): UserConfig['plugins'] => {
+    const isMinifyMode = [Mode.production, Mode.docker].includes(mode);
+    const isDevMode = mode === Mode.development;
 
     const plugins: UserConfig['plugins'] = [reactPlugin()];
 
@@ -44,15 +48,17 @@ const getPlugins = (
 };
 
 export default defineConfig(({ mode }): UserConfig => {
-    const isDockerMode = mode === 'docker';
-    const base = !isDockerMode ? '/real-estate-spa/' : '/';
+    const base = mode !== Mode.docker ? '/real-estate-spa/' : '/';
+    const api =
+        mode !== Mode.docker
+            ? 'https://real-estate-spa-backend.vercel.app'
+            : 'http://localhost:8080';
 
     return {
         base,
-        // exposes the resolved `base` as a build-time constant, so code can
-        // reference public/ assets (e.g. `${__BASE_URL__}assets/...`)
         define: {
-            __BASE_URL__: JSON.stringify(base)
+            __BASE_URL__: JSON.stringify(base),
+            __API_URL__: JSON.stringify(api)
         },
         server: {
             port: 3000,
@@ -86,6 +92,6 @@ export default defineConfig(({ mode }): UserConfig => {
                 }
             }
         },
-        plugins: getPlugins(mode)
+        plugins: getPlugins(mode as Mode)
     };
 });
